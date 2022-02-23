@@ -5,7 +5,9 @@
         <h1 id="title">Absen Kolektif</h1>
         <hr>
         <div id="responsePlaceholder"></div>
+        {% if env.time_limited %}
         <h4 id="timeLimit">Batas Waktu: {{env.time_limit.strftime(env.time_format)}}</h4>
+        {% endif %}
 
         <form id="absenForm" method="post">
             <div class="form-group">
