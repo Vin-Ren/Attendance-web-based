@@ -1,8 +1,16 @@
+
 *, ::after, ::before {
 box-sizing: border-box;
 }
 
 body {
-background-color: #d8e9ea;
-color: #335;
+  color: #333;
+}
+
+td {
+    padding: 0px 5px;
+}
+
+button.btn {
+    margin: 5px 5px;
 }

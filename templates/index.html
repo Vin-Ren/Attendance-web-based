@@ -9,26 +9,41 @@
     <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
 </head>
 <body class="container">
-    <div class="row justify-content-center" style="">
-        <div class="column">
+    <div class="row justify-content-center">
+        <div class="col-4" style="display: block;">
             <h1 id="title">Absen Kolektif</h1>
             <hr>
+            <div id="responsePlaceholder"></div>
             <h4 id="timeLimit">Batas Waktu: {{env.time_limit.strftime(env.time_format)}}</h4>
-            <form id="absenForm" action="{{url_for('attendance.inputAPI')}}" method="post">
+
+            <form id="absenForm" method="post">
                 <div class="form-group">
-                    <label for="name" style="text-align:unset"><h5>Nama:</h5></label>
+                    <label for="name"><h5>Nama:</h5></label>
                     <input class="form-control" name="name" type="text">
+                    <input id="statusPlaceholder" class="form-control" name="status" type="hidden" value="">
                     <hr>
-                    <label>Kehadiran</label>
-                    <input class="form-control" value="Hadir" onclick="poster(this)" type="submit">
+                    <label for=""><h5>Kehadiran</h5></label>
+                    <input class="form-control" id="statusBtnHadir" value="Hadir" onclick="setStatus(this)" type="submit">
                     <label></label>
-                    <input class="form-control" value="Izin" onclick="poster(this)" type="submit">
+                    <input class="form-control" id="statusBtnIzin" value="Izin" onclick="setStatus(this)" type="submit">
                     <label></label>
-                    <input class="form-control" value="Sakit" onclick="poster(this)" type="submit">
+                    <input class="form-control" id="statusBtnSakit" value="Sakit" onclick="setStatus(this)" type="submit">
                 </div>
             </form>
         </div>
     </div>
+    <hr>
+    <div class="row justify-content-center">
+        
+    </div>
+
+    {%if env.get('disabled_statuses')%}
+    <script>
+        {% for status in env.disabled_statuses %}
+        document.getElementById('statusBtn{{status}}').disabled=true; 
+        {% endfor %}
+    </script>
+    {% endif %}
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" referrerpolicy="no-referrer"></script> -->
