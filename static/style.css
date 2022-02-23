@@ -7,6 +7,11 @@ body {
   color: #333;
 }
 
+.row {
+    display: block;
+    margin: 0.1rem 7rem;
+}
+
 td {
     padding: 0px 5px;
 }
@@ -20,4 +25,27 @@ span {
 }
 small.text-muted {
     font-size: 0.85rem;
+}
+
+
+@media screen and (max-width: 750px) {
+    .row {
+        display: block;
+        margin: 0.05rem 0.05rem;
+    }
+}
+
+@media screen and (max-width: 1020px) {
+    .row {
+        display: block;
+        margin: 0.1rem 2rem;
+    }
+}
+
+
+@media screen and (min-width: 1920px) {
+    .row {
+        display: block;
+        margin: 0.1rem 15rem;
+    }
 }

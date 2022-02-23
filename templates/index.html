@@ -1,7 +1,10 @@
 {% extends "layout.html" %}
+{% block head %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+{% endblock head %}
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-5 col-lg-4" style="display: initial;">
+    <div class="col-5 col-lg-4 col-xs-7" style="display: initial;">
         <h1 id="title">Absen Kolektif</h1>
         <hr>
         <div id="responsePlaceholder"></div>
@@ -12,7 +15,7 @@
         <form id="absenForm" method="post">
             <div class="form-group">
                 <label for="name"><h5>Nama:</h5></label>
-                <input class="form-control" name="name" type="text">
+                <input id="nameInput" class="form-control" name="name" type="text">
                 <input id="statusPlaceholder" class="form-control" name="status" type="hidden" value="">
                 <hr>
                 <label for=""><h5>Kehadiran</h5></label>
@@ -26,3 +29,7 @@
     </div>
 </div>
 {% endblock content %}
+{% block scripts %}
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+<script src="{{url_for('static', filename='index.js')}}"></script>
+{% endblock scripts %}

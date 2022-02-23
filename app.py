@@ -59,7 +59,7 @@ def API(endpoint):
             deltaTimeFromLimit = (env.time_limit - datetime.now())
             if not data['name']:
                 raise KeyError
-            if deltaTimeFromLimit.total_seconds() <= 0:
+            if deltaTimeFromLimit.total_seconds() <= 0 and env.time_limited:
                 # lateness = datetime.fromtimestamp(abs(deltaTimeFromLimit.total_seconds()))
                 return jsonify({'success': False, 'reason':'Batas Waktu Telah Dilampaui.'})
             attendanceList[data['name']] = data['status']
@@ -71,6 +71,16 @@ def API(endpoint):
         return jsonify({'success':True, 'success_message':'Kehadiranmu Telah Dicatat Sebagai {}.'.format(data['status'])})
     elif endpoint.lower() == 'collection':
         return jsonify({'raw':attendanceList,'str': '\n'.join(['{}. {}, {}'.format(i+1, data[0], data[1]) for i, data in enumerate(attendanceList.items())])})
+    elif endpoint.lower() == 'autocomplete_name':
+        try:
+            with open('names.json', 'r') as f:
+                names = json.load(f)
+            return jsonify(names)
+        except FileNotFoundError:
+            with open('names.json', 'w') as f:
+                json.dump({'names':['ExampleNames','john doe','alex']}, f, indent=2)
+            return jsonify({'success':False, 'reason':'Autocomplete source file ({}) not found. Created a basic template.'.format('names.json')})
+        
 
 
 @attendance.route('/')
