@@ -31,42 +31,10 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" referrerpolicy="no-referrer"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" referrerpolicy="no-referrer"></script> -->
     <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script> -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> -->
     <script src="{{url_for('static', filename='script.js')}}"></script>
-    <script>
-        var debugging = new Map(); //Keys: response,button
-
-        function poster(button) {
-            debugging.set('button', button);
-
-            $('#4yvftjy34dmt5').remove();
-            $("<input />").attr('id', '4yvftjy34dmt5').attr("type", "hidden").attr("name", "status").attr("value", button.value).appendTo("#absenForm");
-
-            $('#absenForm').submit(function(e){
-                e.preventDefault();
-                formData = $('#absenForm').serialize();
-                $.ajax({
-                    url: '{{url_for("attendance.inputAPI")}}',
-                    type: 'post',
-                    data:$('#absenForm').serialize(),
-                    success:function(retval){
-                        $('#response-alert').remove();
-                        if (retval['success']) {
-                            var alertObj = `<div id="response-alert" class="alert alert-success" role="alert">${retval['success_message']}</div>`;
-                            $('#timeLimit').prepend(alertObj);
-                        }
-                        else {
-                            var alertObj = `<div id="response-alert" class="alert alert-danger" role="alert">${retval['reason']}</div>`;
-                            $('#timeLimit').prepend(alertObj);
-                        }
-                        debugging.set('response', retval)
-                    }
-                });
-            });
-        }
-    </script>
 </body>
 </html>

@@ -36,7 +36,7 @@ def saveAttendance():
 atexit.register(saveAttendance)
 
 def timeParser(s:str):
-    formats = ['%H:%M', '%H:%M:%S', '%d %b %H:%M', '%H %M', '%H %M %S']
+    formats = ['%H:%M', '%H:%M:%S', '%d %b %H:%M', '%H %M', '%H %M %S', '%H']
 
     for format in formats:
         try:
@@ -54,7 +54,8 @@ def inputAPI():
         if not data['name']:
             raise KeyError
         if deltaTimeFromLimit.total_seconds() <= 0:
-            lateness = datetime.fromtimestamp(abs(deltaTimeFromLimit.total_seconds()))
+            # lateness = datetime.fromtimestamp(abs(deltaTimeFromLimit.total_seconds()))
+            
             return jsonify({'success': False, 'reason':'Batas Waktu Telah Dilampaui.'})
         attendanceList[data['name']] = data['status']
         saveAttendance()
@@ -62,7 +63,7 @@ def inputAPI():
         return jsonify({'success': False, 'reason':'Tolong Masukan Nama Anda'})
     except Exception as exc:
         return jsonify({'success': False, 'reason':'Exception Caught', 'exception': [exc.__class__.__name__, exc.args]})
-    return jsonify({'success':True, 'success_message':'Kehadiranmu Telah Tercatat Sebagai {}.'.format(data['status'])})
+    return jsonify({'success':True, 'success_message':'Kehadiranmu Telah Dicatat Sebagai {}.'.format(data['status'])})
 
 
 @attendance.route('/')
@@ -81,7 +82,7 @@ if __name__ == '__main__':
         print('Cache Loaded')
     currtime = datetime.now()
     env.time_limit = args.time_limit.replace(year=currtime.year, month=currtime.month, day=currtime.day)
-    print(currtime, env.time_limit)
+    # print(currtime, env.time_limit)
     
     app = Flask(__name__)
     app.register_blueprint(attendance, url_prefix='/')
