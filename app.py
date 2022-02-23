@@ -18,7 +18,7 @@ class objectifiedDict(dict):
         return super().__setitem__(name, value)
 
 
-env = objectifiedDict(time_format='%H:%M', cacheFile='cached.json', name_autocompletion_file='names.json', time_limited=True)
+env = objectifiedDict(time_format='%H:%M', cacheFile='cached.json', name_autocompletion_file='names.json', fix_name_capitalizations=True, time_limited=True)
 attendanceList = {}
 
 
@@ -52,6 +52,8 @@ attendance = Blueprint('attendance', __name__, url_prefix='/attendance')
 
 @attendance.route('/API/<string:endpoint>', methods=['GET', 'POST'])
 def API(endpoint):
+    multiCapitalizeEachFirstLetterInWord = lambda list_str: [' '.join([(lambda s: s[0].upper()+s[1:].lower())(s) for s in _s.split(' ') if len(s)]) for _s in list_str] # john doe -> John Doe
+
     if endpoint.lower() == 'input':
         try:
             data = dict(request.form)
@@ -62,6 +64,8 @@ def API(endpoint):
             if deltaTimeFromLimit.total_seconds() <= 0 and env.time_limited:
                 # lateness = datetime.fromtimestamp(abs(deltaTimeFromLimit.total_seconds()))
                 return jsonify({'success': False, 'reason':'Batas Waktu Telah Dilampaui.'})
+            if env.fix_name_capitalizations:
+                data['name'] = multiCapitalizeEachFirstLetterInWord([data['name']])[0]
             attendanceList[data['name']] = data['status']
             saveAttendance()
         except KeyError:
@@ -74,8 +78,10 @@ def API(endpoint):
     elif endpoint.lower() == 'autocomplete_name':
         try:
             with open(env.name_autocompletion_file, 'r') as f:
-                names = json.load(f)
-            return jsonify(names)
+                data = json.load(f)
+                if env.fix_name_capitalizations:
+                    data['names'] = multiCapitalizeEachFirstLetterInWord(data['names'])
+            return jsonify(data)
         except FileNotFoundError:
             with open(env.name_autocompletion_file, 'w') as f:
                 json.dump({'names':['ExampleNames','john doe','alex']}, f, indent=2)
@@ -136,6 +142,7 @@ def main():
     # print(currtime, env.time_limit)
 
     if args.loadCached:
+        global attendanceList
         attendanceList=loadCached()
         print('Cache Loaded')
 
