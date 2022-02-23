@@ -14,3 +14,10 @@ td {
 button.btn {
     margin: 5px 5px;
 }
+
+span {
+    margin-right: 1.5rem;
+}
+small.text-muted {
+    font-size: 0.85rem;
+}
