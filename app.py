@@ -18,7 +18,7 @@ class objectifiedDict(dict):
         return super().__setitem__(name, value)
 
 
-env = objectifiedDict(time_format='%H:%M', cacheFile='cached.json', time_limited=True)
+env = objectifiedDict(time_format='%H:%M', cacheFile='cached.json', name_autocompletion_file='names.json', time_limited=True)
 attendanceList = {}
 
 
@@ -73,13 +73,13 @@ def API(endpoint):
         return jsonify({'raw':attendanceList,'str': '\n'.join(['{}. {}, {}'.format(i+1, data[0], data[1]) for i, data in enumerate(attendanceList.items())])})
     elif endpoint.lower() == 'autocomplete_name':
         try:
-            with open('names.json', 'r') as f:
+            with open(env.name_autocompletion_file, 'r') as f:
                 names = json.load(f)
             return jsonify(names)
         except FileNotFoundError:
-            with open('names.json', 'w') as f:
+            with open(env.name_autocompletion_file, 'w') as f:
                 json.dump({'names':['ExampleNames','john doe','alex']}, f, indent=2)
-            return jsonify({'success':False, 'reason':'Autocomplete source file ({}) not found. Created a basic template.'.format('names.json')})
+            return jsonify({'success':False, 'reason':'Autocomplete source file ({}) not found. Created a basic template.'.format(env.name_autocompletion_file)})
         
 
 
