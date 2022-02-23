@@ -122,6 +122,7 @@ def main():
             env.time_limit = datetime.fromtimestamp(currtime.timestamp()+int(args.time_limit.strip('+'))*60)
         else:
             env.time_limit = time_limit.replace(year=currtime.year, month=currtime.month, day=currtime.day)
+        print("Time Limit: {}".format(env.time_limit.strftime(env.time_format)))
     # print(currtime, env.time_limit)
 
     if args.loadCached:
@@ -129,8 +130,8 @@ def main():
         print('Cache Loaded')
 
     if len(args.statusesToDisable) > 0:
-        env.disabled_statuses = ["{}{}".format(s[0].upper(), s[1:].lower()) for s in args.statusesToDisable]
-        print("Disabled Statuses: {}".format(', '.join(env.disabled_statuses)))
+        env.disabled_statuses = ["{}{}".format(s[0].upper(), s[1:].lower()) for s in args.statusesToDisable if len(s)]
+        print("Disabled Statuses: {}".format(', '.join(env.disabled_statuses) if len(env.disabled_statuses) else '-'))
 
     if args.use_waitress:
         import waitress
