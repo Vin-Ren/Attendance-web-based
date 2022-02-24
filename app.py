@@ -110,7 +110,7 @@ def parseArguments():
     parser.add_argument('--host', dest='host', default='0.0.0.0', help="Host to run the web server on. Default='0.0.0.0' AKA Localhost")
     parser.add_argument('--port', dest='port', default=58082, type=int, help="Port to run the web server on. Default=58082")
     parser.add_argument('-w', '--waitress', dest='use_waitress', action='store_true', help='Run the web server using waitress')
-    parser.add_argument('--threads', dest='threads', default=__import__('os').cpu_count(), help='Threads to run waitress on. Default={}'.format(__import__('os').cpu_count()))
+    parser.add_argument('--threads', dest='threads', default=__import__('os').cpu_count()//2, help='Threads to run waitress on. Default={}'.format(__import__('os').cpu_count()//2))
     parser.add_argument('-d', '--debug', dest='debug', action='store_true', help='Starts Web server in Debug')
 
     return parser.parse_args()
