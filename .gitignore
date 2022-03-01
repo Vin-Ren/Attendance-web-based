@@ -6,9 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
-cached.json
-names.json
+cached*.json
+names*.list
 run.bat
+.vscode/
 
 # Distribution / packaging
 .Python

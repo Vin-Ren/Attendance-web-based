@@ -1,7 +1,7 @@
 $(document).ready(function() {
     var names = [];
     $.ajax({
-        url: '/API/autocomplete_name',
+        url: '/API/autocomplete_names',
         type: 'post',
         success: function(data){
             names=data['names'];

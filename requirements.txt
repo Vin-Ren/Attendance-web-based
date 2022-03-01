@@ -1,1 +1,2 @@
-Flask
+Flask>=2.0.0
+AttrLinker>=0.0.2

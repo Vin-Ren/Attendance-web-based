@@ -8,8 +8,8 @@
         <h1 id="title">Absen Kolektif</h1>
         <hr>
         <div id="responsePlaceholder"></div>
-        {% if env.time_limited %}
-        <h4 id="timeLimit">Batas Waktu: {{env.time_limit.strftime(env.time_format)}}</h4>
+        {% if config.time_limited %}
+        <h4 id="timeLimit">Batas Waktu: {{config.time_limit.strftime(config.time_format)}}</h4>
         {% endif %}
 
         <form id="absenForm" method="post">

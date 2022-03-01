@@ -10,10 +10,10 @@
             <td><h4>Kehadiran</h4></td>
         </tr>
         <th colspan="2"><hr></th>
-        {% for name, status in attendance.items() %}
+        {% for entry in attendance_data %}
         <tr>
-            <td>{{name}}</td>
-            <td>{{status}}</td>
+            <td>{{entry.name}}</td>
+            <td>{{entry.status}}</td>
         </tr>
         {% endfor %}
     </table>
@@ -25,7 +25,7 @@
     </div>
 </div>
 
-{% for buttonText, text in copyCandidates.items() %}
+{% for buttonText, text in copy_candidates.items() %}
 <div class="row justify-content-center">
     <button onclick="copyCollectionToClipboard(`{{text}}`);" class="btn btn-default">{{buttonText}}</button>
     <br>

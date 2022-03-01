@@ -9,17 +9,19 @@ function setStatus(button) {
 $('#absenForm').submit(function(e){
     e.preventDefault();
     $.ajax({
-        url: '/API/input',
+        url: '/API/submission',
         type: 'post',
         data:$('#absenForm').serialize(),
         success:function(retval){
             $('#response-alert').remove();
             if (retval['success']) {
-                var alertObj = `<div id="response-alert" class="alert alert-success" role="alert">${retval['success_message']}</div>`;
+                let alert_type = (retval['alert_type'] !== undefined) ? retval['alert_type'] : 'success';
+                var alertObj = `<div id="response-alert" class="alert alert-${alert_type}" role="alert">${retval['success_message']}</div>`;
                 $('#responsePlaceholder').prepend(alertObj);
             }
             else {
-                var alertObj = `<div id="response-alert" class="alert alert-danger" role="alert">${retval['reason']}</div>`;
+                let alert_type = (retval['alert_type'] !== undefined) ? retval['alert_type'] : 'danger';
+                var alertObj = `<div id="response-alert" class="alert alert-${alert_type}" role="alert">${retval['reason']}</div>`;
                 $('#responsePlaceholder').prepend(alertObj);
             }
             debugging.set('response', retval)

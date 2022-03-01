@@ -21,9 +21,9 @@
     </div>
 
     
-    {%if env.get('disabled_statuses')%}
+    {%if config.get('disabled_statuses')%}
     <script>
-        {% for status in env.disabled_statuses %}
+        {% for status in config.disabled_statuses %}
         var btn = document.getElementById('statusBtn{{status}}');
         if (btn != null) {btn.disabled=true;}
         {% endfor %}
