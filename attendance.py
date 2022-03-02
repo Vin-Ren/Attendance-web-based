@@ -130,7 +130,7 @@ class AttendanceManager:
     def recorded_ips(self):
         # Flatten if needed
         # return [ip for _l in [entry.extra.get('access_route') if entry.extra.get('remote_addr')=='127.0.0.1' else [entry.get('remote_addr')] for entry in self.data] for ip in _l]
-        return [entry.extra.get('access_route')[-1] if entry.extra.get('remote_addr')=='127.0.0.1' else entry.get('remote_addr') for entry in self.data]
+        return [ip for _pair in [(entry.extra.get('access_route')[-1], entry.extra.get('remote_addr')) for entry in self.data] for ip in _pair if ip!='127.0.0.1' and ip is not None]
     
     def add_entry(self, name, *args, **kw):
         matches = [entry for entry in self.data if entry.name == name]

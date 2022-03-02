@@ -17,7 +17,8 @@ config = Config(time_format='%H:%M',
                 record_late_submissions=False, 
                 auto_save=True,
                 permit_overwrite=False,
-                overwrite_tracker_level=1)
+                overwrite_tracker_level=1,
+                ip_rate_limit=-1)
 global_opts = Opts(json={'dumps':{'default':json_serializer}, 
                          'dump':{'indent':2},'load':{}},
                    open={'encoding':'UTF-8'},
