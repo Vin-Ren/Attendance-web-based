@@ -128,8 +128,6 @@ class AttendanceManager:
 
     @property
     def recorded_ips(self):
-        # Flatten if needed
-        # return [ip for _l in [entry.extra.get('access_route') if entry.extra.get('remote_addr')=='127.0.0.1' else [entry.get('remote_addr')] for entry in self.data] for ip in _l]
         return [ip for _pair in [(entry.extra.get('access_route')[-1], entry.extra.get('remote_addr')) for entry in self.data] for ip in _pair if ip!='127.0.0.1' and ip is not None]
     
     def add_entry(self, name, *args, **kw):
@@ -156,7 +154,6 @@ class AttendanceManager:
             
         self.data.append(entry)
         [hook(entry) for hook in self.add_entry_hooks]
-        # print(self.data)
         
 
 # If calls given value if callable(AKA Function or instance with __call__ method) else return it
