@@ -19,16 +19,7 @@
         <br>
         <span><small class="text-muted"><a href="https://github.com/Vin-Ren/Attendance-web-based">Project Repository</a></small></span>
     </div>
-
     
-    {%if config.get('disabled_statuses')%}
-    <script>
-        {% for status in config.disabled_statuses %}
-        var btn = document.getElementById('statusBtn{{status}}');
-        if (btn != null) {btn.disabled=true;}
-        {% endfor %}
-    </script>
-    {% endif %}
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" referrerpolicy="no-referrer"></script> -->

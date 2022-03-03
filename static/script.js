@@ -1,38 +1,8 @@
 var debugging = new Map(); //Keys: response,button
 
-function setStatus(button) {
-    debugging.set('button', button);
-    $("#statusPlaceholder").attr("value", button.value);
-
-}
-
-$('#absenForm').submit(function(e){
-    e.preventDefault();
-    $.ajax({
-        url: '/API/submission',
-        type: 'post',
-        data:$('#absenForm').serialize(),
-        success:function(retval){
-            $('#response-alert').remove();
-            if (retval['success']) {
-                let alert_type = (retval['alert_type'] !== undefined) ? retval['alert_type'] : 'success';
-                var alertObj = `<div id="response-alert" class="alert alert-${alert_type}" role="alert">${retval['success_message']}</div>`;
-                $('#responsePlaceholder').prepend(alertObj);
-            }
-            else {
-                let alert_type = (retval['alert_type'] !== undefined) ? retval['alert_type'] : 'danger';
-                var alertObj = `<div id="response-alert" class="alert alert-${alert_type}" role="alert">${retval['reason']}</div>`;
-                $('#responsePlaceholder').prepend(alertObj);
-            }
-            debugging.set('response', retval)
-        }
-    });
-});
-
 
 // #########################
 // FROM: https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
-
 function fallbackCopyTextToClipboard(text) {
     var textArea = document.createElement("textarea");
     textArea.value = text;

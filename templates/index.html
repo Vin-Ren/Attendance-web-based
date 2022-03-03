@@ -11,6 +11,7 @@
         {% if config.time_limited %}
         <h4 id="timeLimit">Batas Waktu: {{config.time_limit.strftime(config.time_format)}}</h4>
         {% endif %}
+        <br>
 
         <form id="absenForm" method="post">
             <div class="form-group">
@@ -18,18 +19,28 @@
                 <input id="nameInput" class="form-control" name="name" type="text">
                 <input id="statusPlaceholder" class="form-control" name="status" type="hidden" value="">
                 <hr>
-                <label for=""><h5>Kehadiran</h5></label>
-                <input class="form-control" id="statusBtnHadir" value="Hadir" onclick="setStatus(this)" type="submit">
+                <h5>Kehadiran</h5>
+                <!-- <label for=""><h5>Kehadiran</h5></label> -->
+                {% for status in config.available_statuses %}
                 <label></label>
-                <input class="form-control" id="statusBtnIzin" value="Izin" onclick="setStatus(this)" type="submit">
-                <label></label>
-                <input class="form-control" id="statusBtnSakit" value="Sakit" onclick="setStatus(this)" type="submit">
+                <input class="form-control" id="statusBtn{{status}}" value="{{status}}" onclick="setStatus(this)" type="submit">
+                {% endfor %}
             </div>
         </form>
     </div>
 </div>
 {% endblock content %}
 {% block scripts %}
+
+{%if config.get('disabled_statuses',[]).__len__() > 0 %}
+<script>
+    {% for status in config.disabled_statuses %}
+    var btn = document.getElementById('statusBtn{{status}}');
+    if (btn != null) {btn.disabled=true;}
+    {% endfor %}
+</script>
+{% endif %}
+
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
 <script src="{{url_for('static', filename='index.js')}}"></script>
 {% endblock scripts %}

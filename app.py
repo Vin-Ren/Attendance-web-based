@@ -12,6 +12,8 @@ from attendance import AttendanceManager, AttendanceEntry
 config = Config(time_format='%H:%M', 
                 cacheFile='cached.json', 
                 name_autocompletion_file='names.list', 
+                available_statuses=['Hadir', 'Izin', 'Sakit'],
+                disabled_statuses=[],
                 fix_name_capitalizations=True, 
                 time_limited=True, 
                 record_late_submissions=False, 
@@ -102,7 +104,8 @@ def parseArguments():
     general = parser.add_argument_group('General')
     general.add_argument('-t', '--time-limit', dest='time_limit', metavar='TIME_LIMIT', default='0', help='Set the time limit for presence collection. Can be of time format or +minutes. Ex: 12:12, +30, 15.30.')
     general.add_argument('--load-cached', dest='load_cached', action='store_true', help='Whether to load cached attendance or not.')
-    general.add_argument('--disable-status', metavar='STATUSES_TO_DISABLE', dest='statusesToDisable', default='', type=lambda _s:_s.split(','), help="Disable given list of statuses. Format=status1[,status2[,status3....]]")
+    general.add_argument('--available-statuses', metavar='AVAILABLE_STATUSES', dest='available_statuses', default='', type=lambda _s:_s.split(','), help="Override default available statuses. Format=status1[,status2[,status3...]]Default statuses=[{}]".format(config.available_statuses))
+    general.add_argument('--disable-status', metavar='STATUSES_TO_DISABLE', dest='statusesToDisable', default='', type=lambda _s:_s.split(','), help="Disable given list of statuses. Format=status1[,status2[,status3...]]")
     general.add_argument('--record-late', dest='record_late', action='store_true', help="Record late entries.")
     general.add_argument('--ignore-record-late', dest='record_late', action='store_false', help="Ignore late entries.")
     general.add_argument('--permit-overwrite', dest='permit_overwrite', action='store_true', help="Permits overwrite on Attendance Manager. This means an entry could be overwritten.")
@@ -116,8 +119,7 @@ def parseArguments():
     development.add_argument('-w', '--waitress', dest='use_waitress', action='store_true', help='Run the web server using waitress')
     development.add_argument('--threads', dest='threads', default=__import__('os').cpu_count()//2, help='Threads to run waitress on. Default={}'.format(__import__('os').cpu_count()//2))
     development.add_argument('-d', '--debug', dest='debug', action='store_true', help='Starts Web server (WSGI) in Debug. Does not have effect if waitress is used.')
-    development.add_argument('-c', '--config', dest='config', action='append', type=lambda entry:entry.split('=',1), choices=list(config), help="ADVANCED USE ONLY. WARNING:Could potentially break the app, use at your own risks. Change config directly. \nFormat='-c key=value' Repeatable. Boolean True=[true,yes,1], Boolean False=[false,no,0], List type=seperate entries with ',' without space.".format())
-
+    development.add_argument('-c', '--config', dest='config', action='append', type=lambda entry:entry.split('=',1), help="ADVANCED USE ONLY. WARNING:Could potentially break the app, use at your own risks. Change config directly. \nFormat='-c key=value' Repeatable. Boolean True=[true,yes,1], Boolean False=[false,no,0], List type=seperate entries with ',' without space. Configurables: {}".format(','.join(config)))
     return parser.parse_args()
 
 
@@ -150,9 +152,13 @@ def main():
         attendanceData.load_file()
         print('Cache Loaded')
 
+    if len(args.available_statuses) > 0:
+        config.available_statuses = ["{}{}".format(s[0].upper(), s[1:].lower()) for s in args.available_statuses if len(s)]
+        print("Available Statuses: {}".format(', '.join(config.available_statuses)))
+
     if len(args.statusesToDisable) > 0:
         config.disabled_statuses = ["{}{}".format(s[0].upper(), s[1:].lower()) for s in args.statusesToDisable if len(s)]
-        print("Disabled Statuses: {}".format(', '.join(config.disabled_statuses) if len(config.disabled_statuses) else '-'))
+        print("Disabled Statuses: {}".format(', '.join(config.disabled_statuses)))
 
     if args.record_late:
         config.record_late_submissions = True
@@ -167,14 +173,15 @@ def main():
         config.ip_rate_limit = args.ip_rate_limit
 
     if args.config is not None:
-        box_width = 50
+        # TODO: make box_width adjust accordingly to the configs set. That means, the string needs to be constructed after all of the configurations have been set.
+        box_width = 75
         print('\n┌'+' Manual Config Modifications '.center(box_width-2,'─')+'┐')
         for k,v in args.config:
             if isinstance(config.get(k), bool):
                 v = True if v.lower() in ['true', 'yes','1'] else False if v.lower() in ['false', 'no', '0'] else None
             elif isinstance(config.get(k), int):
                 v = int(v)
-            elif isinstance(config.get('k'), (list, tuple)):
+            elif isinstance(config.get(k), (list, tuple)):
                 v = v.split(',')
                 
             if v is not None:
