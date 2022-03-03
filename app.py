@@ -152,6 +152,7 @@ def main():
         attendanceData.load_file()
         print('Cache Loaded')
 
+    args.available_statuses = [s for s in args.available_statuses if len(s)]
     if len(args.available_statuses) > 0:
         config.available_statuses = ["{}{}".format(s[0].upper(), s[1:].lower()) for s in args.available_statuses if len(s)]
         print("Available Statuses: {}".format(', '.join(config.available_statuses)))
