@@ -5,7 +5,7 @@ from datetime import datetime
 from flask import Blueprint, jsonify, render_template as _render_template, request
 import i18n
 
-from utils import time_parser, dictUpdater, json_serializer, setup_i18n
+from utils import time_parser, dictUpdater, json_serializer, setup_i18n, make_box
 from objectified_dict import ObjectifiedDict, Config, Opts
 from attendance import AttendanceManager, AttendanceEntry
 
@@ -183,21 +183,19 @@ def main():
         config.ip_rate_limit = args.ip_rate_limit
 
     if args.config is not None:
-        # TODO: make box_width adjust accordingly to the configs set. That means, the string needs to be constructed after all of the configurations have been set.
-        box_width = 75
-        print('\n┌'+' Manual Config Modifications '.center(box_width-2,'─')+'┐')
+        entries=[]
         for k,v in args.config:
             if isinstance(config.get(k), bool):
                 v = True if v.lower() in ['true', 'yes','1'] else False if v.lower() in ['false', 'no', '0'] else None
             elif isinstance(config.get(k), int):
                 v = int(v)
             elif isinstance(config.get(k), (list, tuple)):
-                v = v.split(',')
+                v = [entry for entry in v.split(',') if entry]
                 
             if v is not None:
                 config[k] = v
-                print('│'+"{}:{} --> {}".format(k, v.__class__.__name__, v).center(box_width-2, ' ')+'│')
-        print('└'+''.center(box_width-2,'─')+'┘\n')
+                entries.append("{}:{} --> {}".format(k, v.__class__.__name__, v))
+        [print(ln) for ln in ['\n']+make_box(header='Manual Config Modifications', entries=entries)+['\n']]
         
     if args.use_waitress:
         import waitress
