@@ -1,2 +1,3 @@
 Flask>=2.0.0
 AttrLinker>=0.0.2
+python-i18n[YAML]

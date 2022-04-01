@@ -2,11 +2,13 @@ from argparse import ArgumentParser
 import traceback
 import json
 from datetime import datetime
-from flask import Blueprint, jsonify, render_template, request
+from flask import Blueprint, jsonify, render_template as _render_template, request
+import i18n
 
-from utils import time_parser, dictUpdater, json_serializer
+from utils import time_parser, dictUpdater, json_serializer, setup_i18n
 from objectified_dict import ObjectifiedDict, Config, Opts
 from attendance import AttendanceManager, AttendanceEntry
+
 
 
 config = Config(time_format='%H:%M', 
@@ -27,8 +29,15 @@ global_opts = Opts(json={'dumps':{'default':json_serializer},
                    jsonify={},
                    flask={'render_template':{'config':config}})
 attendanceData = AttendanceManager(filename=lambda:config.cacheFile, opts=global_opts, permit_overwrite=lambda:config.permit_overwrite, auto_save=lambda:config.auto_save, overwrite_tracker_level=lambda:config.overwrite_tracker_level, ip_rate_limit=lambda:config.ip_rate_limit)
+setup_i18n()
+_=i18n.t
 
 attendance = Blueprint('attendance', __name__, url_prefix='/attendance')
+
+
+
+def render_template(*args, **kwargs):
+    return _render_template(*args, **kwargs, **global_opts.get('flask.render_template'))
 
 
 def getCopyCandidates():
@@ -53,21 +62,21 @@ def API(endpoint):
             deltaTimeFromLimit = (config.time_limit - submission_time)
             if deltaTimeFromLimit.total_seconds() <= 0 and config.time_limited:
                 if config.record_late_submissions:
-                    attendanceData.add_entry(data['name'], data['status'], submission_time=submission_time, description="Terlambat", remote_addr=request.remote_addr, access_route=request.access_route)
-                    return jsonify({'success': True, 'success_message':'Batas Waktu Telah Dilampaui, namun kehadiran anda dicatat.', 'alert_type':'warning'}, **global_opts.get('jsonify'))
-                return jsonify({'success': False, 'reason':'Batas Waktu Telah Dilampaui.'}, **global_opts.get('jsonify'))
+                    attendanceData.add_entry(data['name'], data['status'], submission_time=submission_time, description=_('submission.late_reason'), remote_addr=request.remote_addr, access_route=request.access_route)
+                    return jsonify({'success': True, 'success_message':_('submission.late_success_message'), 'alert_type':'warning'}, **global_opts.get('jsonify'))
+                return jsonify({'success': False, 'reason':_('submission.late_failed_reason')}, **global_opts.get('jsonify'))
             attendanceData.add_entry(data['name'], data['status'], submission_time=submission_time, remote_addr=request.remote_addr, access_route=request.access_route)
         except KeyError:
             # traceback.print_exc()
-            return jsonify({'success': False, 'reason':'Masukan Nama Anda Terlebih Dahulu'}, **global_opts.get('jsonify'))
+            return jsonify({'success': False, 'reason':_('submission.fields_not_filled')}, **global_opts.get('jsonify'))
         except AttendanceManager.Exceptions.OverwriteIsNotPermitted:
-            return jsonify({'success':False, 'reason':'Kehadiran anda telah terdaftar sebelumnya'}, **global_opts.get('jsonify'))
+            return jsonify({'success':False, 'reason':_('submission.overwrite_not_permitted')}, **global_opts.get('jsonify'))
         except AttendanceManager.Exceptions.RateLimited as exc:
-            return jsonify({'success':False, 'reason':'Anda telah mengirimkan {} daftar hadir sebelumnya.'.format(exc.total_submission), 'alert_type':'secondary'}, **global_opts.get('jsonify'))
+            return jsonify({'success':False, 'reason':_('submission.rate_limited').format(count=exc.total_submission), 'alert_type':'secondary'}, **global_opts.get('jsonify'))
         except Exception as exc:
             traceback.print_exc()
             return jsonify({'success': False, 'reason':'Exception Caught', 'exception': [exc.__class__.__name__, exc.args]}, **global_opts.get('jsonify'))
-        return jsonify({'success':True, 'success_message':'Kehadiranmu Dicatat Sebagai {}.'.format(data['status'])}, **global_opts.get('jsonify'))
+        return jsonify({'success':True, 'success_message':_('submission.success_message').format(attendance_status=data['status'])}, **global_opts.get('jsonify'))
     
     elif endpoint == 'collected':
         return jsonify({'attendance_data':attendanceData.data}, **global_opts.get('jsonify'))
@@ -90,12 +99,12 @@ def API(endpoint):
 
 @attendance.route('/')
 def index():
-    return render_template('index.html', title="Collective Absence", **global_opts.get('flask.render_template'))
+    return render_template('index.html', title="Collective Absence")
 
 
 @attendance.route('/collected')
 def show_collected():
-    return render_template('collected.html', title="Collected Attendance", attendance_data=attendanceData.data, copy_candidates=getCopyCandidates(), **global_opts.get('flask.render_template'))
+    return render_template('collected.html', title="Collected Attendance", attendance_data=attendanceData.data, copy_candidates=getCopyCandidates())
 
 
 def parseArguments():

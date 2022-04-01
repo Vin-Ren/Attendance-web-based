@@ -1,5 +1,5 @@
 from datetime import datetime
-
+import i18n
 
 dictUpdater = lambda dbase,dupdt:(lambda base,updater:[base.update(updater), base][-1])(dbase,dupdt)
 
@@ -21,3 +21,12 @@ def json_serializer(obj):
     # This function is expandable if more types were needed to be serialized.
     if isinstance(obj, datetime):
         return obj.isoformat()
+
+
+def setup_i18n(locale='id', locale_path='./locale', filename_format='{namespace}.{format}', fallback_locale='en'):
+    # Setup i18n
+    i18n.load_path.append(locale_path)
+    i18n.set('filename_format', filename_format) # Default: {namespace}.{locale}.{format} Ex: foo.en.yaml
+    
+    i18n.set('locale', locale)
+    i18n.set('fallback', fallback_locale)

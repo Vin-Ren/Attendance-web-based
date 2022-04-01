@@ -1,0 +1,17 @@
+en:
+  success_message: Your attendance has been recorded as {attendance_status}.
+  late_reason: Late
+  late_success_message: Time limit has been exceeded, but your submission is still recorded
+  late_failed_reason: Time limit has been exceeded.
+  fields_not_filled: Please enter your name
+  overwrite_not_permitted: Your attendance has been recorded before
+  rate_limited: Anda telah mengirimkan {count} daftar hadir sebelumnya.
+
+id:
+  success_message: Kehadiranmu Dicatat Sebagai {attendance_status}.
+  late_reason: Terlambat
+  late_success_message: Batas Waktu Telah Dilampaui, namun kehadiran anda dicatat.
+  late_failed_reason: Batas Waktu Telah Dilampaui.
+  fields_not_filled: Masukkan Nama Anda Terlebih Dahulu
+  overwrite_not_permitted: Kehadiran anda telah terdaftar sebelumnya
+  rate_limited: Anda telah mengirimkan {count} daftar hadir sebelumnya.
