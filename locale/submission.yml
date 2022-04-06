@@ -5,7 +5,7 @@ en:
   late_failed_reason: Time limit has been exceeded.
   fields_not_filled: Please enter your name
   overwrite_not_permitted: Your attendance has been recorded before
-  rate_limited: Anda telah mengirimkan {count} daftar hadir sebelumnya.
+  rate_limited: You have already sent {count} attendance entries before.
 
 id:
   success_message: Kehadiranmu Dicatat Sebagai {attendance_status}.

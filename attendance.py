@@ -147,7 +147,7 @@ class AttendanceManager:
             if count>=self.ip_rate_limit:
                 raise self.Exceptions.IPAccesslimited('More than {} submissions detected inside the database from given ip.'.format(self.ip_rate_limit), total_submission=count)
         
-        if matches:     
+        if matches:
             entry.previous = self.tracker_hooks.get(self.overwrite_tracker_level)(matches[0])
             if self.overwrite_tracker_level > 1:
                 entry.edit_depth = entry.previous_depth
@@ -160,8 +160,8 @@ class AttendanceManager:
 optional_callable = lambda val:val() if callable(val) else val
 apply_optcall = lambda e: LinkManager._getDefault().bind(AttendanceManager, e[0], e[1], getterConverter=optional_callable, setupOptions=dict(enableSetter=False))
 list(map(apply_optcall,
-         {'_permit_overwrite': 'permit_overwrite',
-          '_auto_save': 'auto_save',
-          '_filename': 'filename',
-          '_overwrite_tracker_level':'overwrite_tracker_level',
-          '_ip_rate_limit':'ip_rate_limit'}.items()))
+         {'permit_overwrite': '_permit_overwrite',
+          'auto_save': '_auto_save',
+          'filename': '_filename',
+          'overwrite_tracker_level':'_overwrite_tracker_level',
+          'ip_rate_limit':'_ip_rate_limit'}.items()))

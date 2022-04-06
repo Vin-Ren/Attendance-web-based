@@ -38,7 +38,7 @@ def make_box(header:Str, entries:List[Str], padding:Int=3):
     texts = []
     max_text_width = len(max([header]+entries, key=len))
     box_width = max_text_width + 2 + padding
-    texts.append("┌{}┐".format(' {} '.format(header).center(box_width,'─')))
+    texts.append( "┌{}┐".format(' {} '.format(header).center(box_width,'─')))
     texts.extend(["│{}│".format(entry.center(box_width, ' ')) for entry in entries])
-    texts.append("└{}┘".format(''.center(box_width, '─')))
+    texts.append( "└{}┘".format(''.center(box_width, '─')))
     return texts

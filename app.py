@@ -141,7 +141,6 @@ def main():
     args = parseArguments()
 
     # Processing args values
-    # TODO: Make a limiter for ip
     if args.time_limit=='0':
         print('Running without time limit')
         config.time_limited = False
