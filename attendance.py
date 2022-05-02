@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from attrLinker import LinkManager
+from attrLinker import LinkedClass, PreparedLink, LinkMethod
 
 from utils import dictUpdater
 from objectified_dict import ObjectifiedDict, Opts
@@ -43,7 +43,13 @@ class AttendanceEntry(ObjectifiedDict):
         return depth
 
 
+# If calls given value if callable(AKA Function or instance with __call__ method) else return it
+optional_callable = lambda val:val() if callable(val) else val
+generate_sunder_pair = lambda lst:[('_%s' % name, name) for name in lst]
+
+@LinkedClass
 class AttendanceManager:
+    __LINKS__ = [PreparedLink(LinkMethod.DirectLink, source, dest, getterConverter=optional_callable, setupOptions=dict(enableSetter=False)) for source, dest in generate_sunder_pair({'permit_overwrite', 'auto_save', 'filename', 'overwrite_tracker_level', 'ip_rate_limit'})]
     
     class Exceptions:
         class BaseExc(Exception):
@@ -154,14 +160,3 @@ class AttendanceManager:
             
         self.data.append(entry)
         [hook(entry) for hook in self.add_entry_hooks]
-        
-
-# If calls given value if callable(AKA Function or instance with __call__ method) else return it
-optional_callable = lambda val:val() if callable(val) else val
-apply_optcall = lambda e: LinkManager._getDefault().bind(AttendanceManager, e[0], e[1], getterConverter=optional_callable, setupOptions=dict(enableSetter=False))
-list(map(apply_optcall,
-         {'permit_overwrite': '_permit_overwrite',
-          'auto_save': '_auto_save',
-          'filename': '_filename',
-          'overwrite_tracker_level':'_overwrite_tracker_level',
-          'ip_rate_limit':'_ip_rate_limit'}.items()))

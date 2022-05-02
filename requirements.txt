@@ -1,3 +1,3 @@
 Flask>=2.0.0
-AttrLinker>=0.0.2
+AttrLinker==0.0.6
 python-i18n[YAML]
